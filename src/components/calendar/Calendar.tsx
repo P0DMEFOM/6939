@@ -21,8 +21,29 @@ export function Calendar() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [showEventModal, setShowEventModal] = useState(false);
   
-  // Создаем события из дедлайнов проектов
-  const projectDeadlineEvents: CalendarEvent[] = projects.map(project => ({
+  // Функция для проверки участия пользователя в проекте
+  const isUserInProject = (project: any): boolean => {
+    if (!user) return false;
+    
+    // Админы видят все проекты
+    if (user.role === 'admin') return true;
+    
+    // Менеджеры видят проекты, где они назначены менеджерами
+    if (project.manager?.id === user.id) return true;
+    
+    // Фотографы видят проекты, где они назначены фотографами
+    if (user.role === 'photographer' && project.photographers.some((p: any) => p.id === user.id)) return true;
+    
+    // Дизайнеры видят проекты, где они назначены дизайнерами
+    if (user.role === 'designer' && project.designers.some((d: any) => d.id === user.id)) return true;
+    
+    return false;
+  };
+
+  // Создаем события из дедлайнов проектов (только для проектов, в которых участвует пользователь)
+  const projectDeadlineEvents: CalendarEvent[] = projects
+    .filter(project => isUserInProject(project))
+    .map(project => ({
     id: `project-${project.id}`,
     title: `Дедлайн: ${project.title}`,
     description: `Завершение проекта "${project.title}"`,
@@ -33,28 +54,8 @@ export function Calendar() {
     type: 'deadline'
   }));
 
-  const [customEvents, setCustomEvents] = useState<CalendarEvent[]>([
-    {
-      id: '1',
-      title: 'Свадебная фотосессия',
-      description: 'Фотосессия для альбома "Анна & Михаил"',
-      date: '2024-02-15',
-      time: '10:00',
-      createdBy: '1',
-      createdByName: 'Анна Иванова',
-      type: 'photoshoot'
-    },
-    {
-      id: '2',
-      title: 'Встреча с клиентом',
-      description: 'Обсуждение деталей выпускного альбома',
-      date: '2024-02-18',
-      time: '14:00',
-      createdBy: '3',
-      createdByName: 'Елена Сидорова',
-      type: 'meeting'
-    }
-  ]);
+  // Персональные события пользователя
+  const [customEvents, setCustomEvents] = useState<CalendarEvent[]>([]);
 
   // Объединяем пользовательские события и события дедлайнов проектов
   const events = [...customEvents, ...projectDeadlineEvents];

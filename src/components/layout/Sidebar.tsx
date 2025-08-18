@@ -9,7 +9,8 @@ import {
   Palette,
   UserPlus,
   DollarSign,
-  MessageCircle
+  MessageCircle,
+  FileText
 } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 import { cn } from '../../utils/cn';
@@ -26,6 +27,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
     const baseItems = [
       { id: 'dashboard', label: 'Главная', icon: Home },
       { id: 'projects', label: 'Проекты', icon: FolderOpen },
+      { id: 'reports', label: 'Отчеты', icon: MessageCircle },
     ];
 
     const roleSpecificItems = {
@@ -40,7 +42,7 @@ export function Sidebar({ activeTab, onTabChange }: SidebarProps) {
       { id: 'employees', label: 'Сотрудники', icon: Users },
       { id: 'salary', label: 'Зарплаты', icon: DollarSign },
       { id: 'calendar', label: 'Календарь', icon: Calendar },
-      { id: 'script', label: 'Скрипт', icon: MessageCircle },
+      { id: 'script', label: 'Скрипт', icon: FileText },
     ];
 
     return [

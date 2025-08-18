@@ -277,6 +277,17 @@ export function ProjectsList({ onProjectSelect }: { onProjectSelect?: (projectId
     return false;
   };
 
+  // Функция для проверки видимости проекта
+  const canViewProject = (project: Project): boolean => {
+    if (!user) return false;
+    
+    // Админы видят все проекты
+    if (user.role === 'admin') return true;
+    
+    // Остальные видят только проекты, в которых участвуют
+    return canInteractWithProject(project);
+  };
+
   const getStatusInfo = (status: string) => {
     const statusMap = {
       'planning': { label: 'Планирование', color: 'bg-gray-100 text-gray-800', icon: Clock },
@@ -292,8 +303,8 @@ export function ProjectsList({ onProjectSelect }: { onProjectSelect?: (projectId
                          project.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || project.status === statusFilter;
     
-    // Все пользователи видят все проекты, но взаимодействовать могут только участники
-    return matchesSearch && matchesStatus;
+    // Пользователи видят только проекты, в которых участвуют
+    return matchesSearch && matchesStatus && canViewProject(project);
   });
 
   const handleCreateProject = async (projectData: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>) => {

@@ -11,6 +11,7 @@ import { EmployeesList } from './components/admin/EmployeesList';
 import { SalaryManagement } from './components/admin/SalaryManagement';
 import { Calendar } from './components/calendar/Calendar';
 import { Script } from './components/script/Script';
+import { Reports } from './components/reports/Reports';
 import { ProjectDetail } from './components/projects/ProjectDetail';
 
 function AppContent() {
@@ -55,6 +56,8 @@ function AppContent() {
             onBack={handleBackToProjects}
           />
         ) : <ProjectsList onProjectSelect={handleProjectSelect} />;
+      case 'reports':
+        return <Reports />;
       case 'add-employee':
         return <AddEmployee />;
       case 'employees':
